@@ -19,10 +19,7 @@ movementTypes = [
     gui.easeInElastic
 ]
 
-calendarStart = (509, 896)
 calendarDiff = (37, 25)
-calendarNextMonth = (725, 832)
-addParticipantButton = (888, 869)
 userButton = (538, 630)
 acknowledge = [(565, 442), (544, 502)]
 bookings = [(656, 567), (695, 618)]
@@ -46,31 +43,35 @@ def initBrowser(zone):
     while (gui.locateOnScreen('./images/hubLogo.png', confidence=0.90) == None):
         pass
 
+    time.sleep(0.153)
     gui.moveTo(960, 540)
     gui.click(button="left")
-    gui.scroll(-850)
+    gui.scroll(-2354)
 
 def addParticipant():
-    gui.moveTo(addParticipantButton[0], addParticipantButton[1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
-    gui.click(button="left")
+    addParticipantButton = gui.center(list(gui.locateAllOnScreen('./images/plus.png', confidence=0.90))[1])
+    click(addParticipantButton, 0.1)
 
 def selectCalendarDay(desiredDay, desiredDate):
     monthDif = int(desiredDate.strftime("%m")) - int(datetime.datetime.now().strftime("%m"))
     if (monthDif > 0):
-        gui.moveTo(calendarNextMonth[0], calendarNextMonth[1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
+        forwardButton = gui.center(gui.locateOnScreen('./images/forwardButton.png', confidence=0.98))
+        gui.moveTo(forwardButton[0], forwardButton[1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
 
         for i in range(monthDif):
             time.sleep(random.random() / 10)
             gui.click(button="left")
 
-    calendarPosition = (calendarStart[0] + calendarDiff[0]*int(desiredDate.strftime("%w")), calendarStart[1] + calendarDiff[1]*(desiredDay // 7))
-    click(calendarPosition, 0.1)
+    backButton = gui.center(gui.locateOnScreen('./images/backButton.png', confidence=0.95))
+    datePosition = (backButton[0] + calendarDiff[0]*int(desiredDate.strftime("%w")), backButton[1] + calendarDiff[1]*(desiredDay // 7) + 60)
+    click(datePosition, 0.1)
+    
     time.sleep(0.2 + random.random() / 10)
     gui.scroll(-703)
 
 def pressBookingButton(desiredDay, desiredTime, desiredDate):
     bookingButton = None
-    newCalendarStart = None
+    datePosition = None
 
     while bookingButton == None:
         timeslot = None
@@ -91,13 +92,12 @@ def pressBookingButton(desiredDay, desiredTime, desiredDate):
                 bookingButton = button
 
         if (bookingButton == None):
-            if (newCalendarStart == None):
+            if (datePosition == None):
                 backButton = gui.center(gui.locateOnScreen('./images/backButton.png', confidence=0.95))
-                newCalendarStart = (backButton[0] + calendarDiff[0]*int(desiredDate.strftime("%w")), backButton[1] + calendarDiff[1]*(desiredDay // 7) + 60)
+                datePosition = (backButton[0] + calendarDiff[0]*int(desiredDate.strftime("%w")), backButton[1] + calendarDiff[1]*(desiredDay // 7) + 60)
             
-            click(newCalendarStart, 0.1)
+            click(datePosition, 0.1)
             time.sleep(0.7 + random.random() / 10)
-
 
     click(bookingButton, 0.1)
 
@@ -136,11 +136,11 @@ def completeBooking():
     click(complete, 0.1)
 
 def bookClimb():
-    desiredZone = 3
+    desiredZone = 1
     desiredYear = 2021
-    desiredDay = 26
-    desiredMonth = 3
-    desiredTime = "4pm"
+    desiredDay = 29
+    desiredMonth = 4
+    desiredTime = "730pm"
 
     desiredDate = datetime.datetime(desiredYear, desiredMonth, desiredDay)
 
