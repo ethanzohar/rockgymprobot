@@ -5,7 +5,7 @@ import random
 import datetime
 
 zones = [
-  "",
+  "ARRAYS START AT 1 LMAO",
   "https://app.rockgympro.com/b/?&bo=3ba4229e839f48d08bff7026ebb507e0",
   "https://app.rockgympro.com/b/?&bo=bd099f5a7306411ba1cfe4cfc6b85e49",
   "https://app.rockgympro.com/b/?&bo=16d922aa60754e2d8f7dee10054da1de"
@@ -19,20 +19,10 @@ movementTypes = [
     gui.easeInElastic
 ]
 
-desiredZone = 3
-desiredYear = 2021
-desiredDay = 26
-desiredMonth = 3
-desiredTime = "4pm"
-
-desiredDate = datetime.datetime(desiredYear, desiredMonth, desiredDay)
-
 calendarStart = (509, 896)
 calendarDiff = (37, 25)
 calendarNextMonth = (725, 832)
-
 addParticipantButton = (888, 869)
-
 userButton = (538, 630)
 acknowledge = [(565, 442), (544, 502)]
 bookings = [(656, 567), (695, 618)]
@@ -44,10 +34,14 @@ robot = (494, 775)
 complete = (655, 860)
 
 def distance(point1, point2):
-    return ((((point2[0] - point1[0])**2) + ((point2[1] - point1[1])**2) )**0.5)
+    return ((((point2[0] - point1[0])**2) + ((point2[1] - point1[1])**2))**0.5)
 
-def initBrowser():
-    webbrowser.open_new(zones[desiredZone])
+def click(position, offset = 0):
+    gui.moveTo(position[0], position[1], offset + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
+    gui.click(button="left")
+
+def initBrowser(zone):
+    webbrowser.open_new(zones[zone])
 
     while (gui.locateOnScreen('./images/hubLogo.png', confidence=0.90) == None):
         pass
@@ -57,25 +51,24 @@ def initBrowser():
     gui.scroll(-850)
 
 def addParticipant():
-    gui.moveTo(addParticipantButton[0], addParticipantButton[1], 0.2 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
+    gui.moveTo(addParticipantButton[0], addParticipantButton[1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
     gui.click(button="left")
 
-def selectCalendarDay():
+def selectCalendarDay(desiredDay, desiredDate):
     monthDif = int(desiredDate.strftime("%m")) - int(datetime.datetime.now().strftime("%m"))
     if (monthDif > 0):
-        gui.moveTo(calendarNextMonth[0], calendarNextMonth[1], 0.2 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
+        gui.moveTo(calendarNextMonth[0], calendarNextMonth[1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
 
         for i in range(monthDif):
             time.sleep(random.random() / 10)
             gui.click(button="left")
 
     calendarPosition = (calendarStart[0] + calendarDiff[0]*int(desiredDate.strftime("%w")), calendarStart[1] + calendarDiff[1]*(desiredDay // 7))
-    gui.moveTo(calendarPosition[0], calendarPosition[1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
-    gui.click(button="left")
+    click(calendarPosition, 0.1)
     time.sleep(0.2 + random.random() / 10)
     gui.scroll(-703)
 
-def pressBookingButton():
+def pressBookingButton(desiredDay, desiredTime, desiredDate):
     bookingButton = None
     newCalendarStart = None
 
@@ -102,49 +95,34 @@ def pressBookingButton():
                 backButton = gui.center(gui.locateOnScreen('./images/backButton.png', confidence=0.95))
                 newCalendarStart = (backButton[0] + calendarDiff[0]*int(desiredDate.strftime("%w")), backButton[1] + calendarDiff[1]*(desiredDay // 7) + 60)
             
-            gui.moveTo(newCalendarStart[0], newCalendarStart[1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
-            gui.click(button="left")
+            click(newCalendarStart, 0.1)
             time.sleep(0.7 + random.random() / 10)
 
-    gui.moveTo(bookingButton[0], bookingButton[1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
-    gui.click(button="left")
+
+    click(bookingButton, 0.1)
 
 def completeBooking():
     while (gui.locateOnScreen('./images/bookingDetails.png', confidence=0.90) == None):
         pass
 
-    gui.moveTo(userButton[0], userButton[1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
-    gui.click(button="left")
+    click(userButton, 0.1)
 
-    time.sleep(0.046)
     gui.scroll(-607)
+    time.sleep(0.089)
 
-    gui.moveTo(acknowledge[0][0], acknowledge[0][1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
-    gui.click(button="left")
+    click(acknowledge[0], 0.1)
+    click(acknowledge[1])
 
-    gui.moveTo(acknowledge[1][0], acknowledge[1][1], random.random() / 10, movementTypes[random.randint(0, len(movementTypes) - 1)])
-    gui.click(button="left")
+    click(bookings[0], 0.1)
+    click(bookings[1])
 
-    gui.moveTo(bookings[0][0], bookings[0][1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
-    gui.click(button="left")
+    click(membership[0], 0.1)
+    click(membership[1])
 
-    gui.moveTo(bookings[1][0], bookings[1][1], random.random() / 10, movementTypes[random.randint(0, len(movementTypes) - 1)])
-    gui.click(button="left")
+    click(directives[0], 0.1)
+    click(directives[1])
 
-    gui.moveTo(membership[0][0], membership[0][1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
-    gui.click(button="left")
-
-    gui.moveTo(membership[1][0], membership[1][1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
-    gui.click(button="left")
-
-    gui.moveTo(directives[0][0], directives[0][1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
-    gui.click(button="left")
-
-    gui.moveTo(directives[1][0], directives[1][1], random.random() / 10, movementTypes[random.randint(0, len(movementTypes) - 1)])
-    gui.click(button="left")
-
-    gui.moveTo(continueButton[0], continueButton[1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
-    gui.click(button="left")
+    click(continueButton, 0.1)
 
     while (gui.locateOnScreen('./images/confirmBookingDetails.png', confidence=0.90) == None):
         pass
@@ -153,18 +131,24 @@ def completeBooking():
     time.sleep(0.11)
     gui.scroll(-613)
 
-    gui.moveTo(agree[0], agree[1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
-    gui.click(button="left")
+    click(agree, 0.1)
+    click(robot, 0.1)
+    click(complete, 0.1)
 
-    gui.moveTo(robot[0], robot[1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
-    gui.click(button="left")
+def bookClimb():
+    desiredZone = 3
+    desiredYear = 2021
+    desiredDay = 26
+    desiredMonth = 3
+    desiredTime = "4pm"
 
-    gui.moveTo(complete[0], complete[1], 0.1 + (random.random() / 10), movementTypes[random.randint(0, len(movementTypes) - 1)])
-    gui.click(button="left")
+    desiredDate = datetime.datetime(desiredYear, desiredMonth, desiredDay)
+
+    initBrowser(desiredZone)
+    addParticipant()
+    selectCalendarDay(desiredDay, desiredDate)
+    pressBookingButton(desiredDay, desiredTime, desiredDate)
+    completeBooking()
 
 if __name__ == "__main__":
-    initBrowser()
-    addParticipant()
-    selectCalendarDay()
-    pressBookingButton()
-    completeBooking()
+    bookClimb()
