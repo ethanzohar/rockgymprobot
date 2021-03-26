@@ -98,7 +98,7 @@ def pressBookingButton(desiredDay, desiredTime, desiredDate):
                 datePosition = (backButton[0] + calendarDiff[0]*int(desiredDate.strftime("%w")), backButton[1] + calendarDiff[1]*(desiredDay // 7) + 60)
             
             click(datePosition, 0.1)
-            time.sleep(0.7 + random.random() / 10)
+            time.sleep(1 + random.random() / 10)
 
     click(bookingButton, 0.1)
 
