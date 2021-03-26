@@ -3,6 +3,7 @@ import time
 import webbrowser
 import random
 import datetime
+import schedule
 
 zones = [
   "ARRAYS START AT 1 LMAO",
@@ -139,9 +140,8 @@ def bookClimb():
     desiredZone = 1
     desiredYear = 2021
     desiredDay = 29
-    desiredMonth = 4
+    desiredMonth = 3
     desiredTime = "730pm"
-
     desiredDate = datetime.datetime(desiredYear, desiredMonth, desiredDay)
 
     initBrowser(desiredZone)
@@ -151,4 +151,9 @@ def bookClimb():
     completeBooking()
 
 if __name__ == "__main__":
-    bookClimb()
+    cronTime = "11:59"
+    schedule.every().day.at(cronTime).do(bookClimb)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(0.5)
