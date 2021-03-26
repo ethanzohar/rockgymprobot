@@ -167,5 +167,4 @@ if __name__ == "__main__":
     addParticipant()
     selectCalendarDay()
     pressBookingButton()
-    time.sleep(0.7 + random.random() / 10)
     completeBooking()
