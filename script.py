@@ -151,7 +151,7 @@ def bookClimb():
     completeBooking()
 
 if __name__ == "__main__":
-    cronTime = "11:59"
+    cronTime = "12:00"
     schedule.every().day.at(cronTime).do(bookClimb)
 
     while True:
